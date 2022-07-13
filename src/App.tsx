@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Login from './pages/login/login';
 import { Box } from '@mui/system';
-import { AppBar, IconButton, styled, alpha, Toolbar, Typography, InputBase, Paper } from '@mui/material';
+import { AppBar, IconButton, styled, alpha, Toolbar, Typography, InputBase, Paper, ToggleButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuList from '@mui/material/MenuList';
@@ -12,7 +12,10 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ContentCut from '@mui/icons-material/ContentCut';
 import ContentCopy from '@mui/icons-material/ContentCopy';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from './store/store';
+import { toggleMenu } from './layouts/toggleSlice';
 
 const isAuthenticated = true
 
@@ -59,6 +62,11 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function App() {
+  const isOpen = useSelector((state: RootState) => state.toggle.value)
+  const dispatch = useDispatch()
+  const WrappedRoutes = <Routes>
+    <Route path="/" element={<Login />} />
+  </Routes>
   return isAuthenticated ? (
     <div className="App">
       <div className="header">
@@ -71,6 +79,7 @@ function App() {
                 color="inherit"
                 aria-label="open drawer"
                 sx={{ mr: 2 }}
+                onClick={() => dispatch(toggleMenu())}
               >
                 <MenuIcon />
               </IconButton>
@@ -95,7 +104,7 @@ function App() {
           </AppBar>
         </Box>
       </div>
-      <div style={{ display: 'flex' }}>
+      {isOpen ? <div style={{ display: 'flex' }}>
         <div className="sidebar" style={{ flexGrow: 1 }}>
           <MenuList>
             <MenuItem>
@@ -119,11 +128,13 @@ function App() {
           </MenuList>
         </div>
         <div className="content" style={{ flexGrow: 1 }}>
-          <Routes>
-            <Route path="/" element={<Login />} />
-          </Routes>
+          {WrappedRoutes}
         </div>
+      </div> :
+      <div className="content" style={{ flexGrow: 1 }}>
+        {WrappedRoutes}
       </div>
+      }
     </div>
   ) : <Login />;
 }
