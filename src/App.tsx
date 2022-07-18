@@ -12,10 +12,11 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ContentCut from '@mui/icons-material/ContentCut';
 import ContentCopy from '@mui/icons-material/ContentCopy';
-import { Route, Routes } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from './store/store';
-import { toggleMenu } from './layouts/toggleSlice';
+import { toggleMenu } from './store/toggleSlice';
+import User from './pages/user-management/user';
 
 const isAuthenticated = true
 
@@ -66,6 +67,7 @@ function App() {
   const dispatch = useDispatch()
   const WrappedRoutes = <Routes>
     <Route path="/" element={<Login />} />
+    <Route path="/user-management" element={<User />} />
   </Routes>
   return isAuthenticated ? (
     <div className="App">
@@ -107,33 +109,23 @@ function App() {
       {isOpen ? <div style={{ display: 'flex' }}>
         <div className="sidebar" style={{ flexGrow: 1 }}>
           <MenuList>
-            <MenuItem>
-              <ListItemIcon>
-                <ContentCut fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Cut</ListItemText>
-              <Typography variant="body2" color="text.secondary">
-                ⌘X
-              </Typography>
-            </MenuItem>
-            <MenuItem>
-              <ListItemIcon>
-                <ContentCopy fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Copy</ListItemText>
-              <Typography variant="body2" color="text.secondary">
-                ⌘C
-              </Typography>
-            </MenuItem>
+            <Link to='user-management'>
+              <MenuItem >
+                <ListItemIcon>
+                  <ContentCut fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>User Management</ListItemText>
+              </MenuItem>
+            </Link>
           </MenuList>
         </div>
         <div className="content" style={{ flexGrow: 1 }}>
           {WrappedRoutes}
         </div>
       </div> :
-      <div className="content" style={{ flexGrow: 1 }}>
-        {WrappedRoutes}
-      </div>
+        <div className="content" style={{ flexGrow: 1 }}>
+          {WrappedRoutes}
+        </div>
       }
     </div>
   ) : <Login />;
